@@ -1,23 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useEffect, useState } from "react";
+import Pagination from "./Pagination";
 
 function App() {
+  const [place, setPlace] = useState([]);
+  const [limit, setLimit] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [prev, SetPrev] = useState([]);
+  const [isLoading, SetIsLoading] = useState(false);
+
+  useEffect(() => {
+    SetIsLoading(true);
+    fetch("https://jsonplaceholder.typicode.com/posts")
+      .then((data) => data.json())
+      .then((res) => {
+        setPlace(res);
+        SetIsLoading(false);
+      });
+  }, []);
+
+  const indexOfLastPost = currentPage * limit;
+  const indexOfFirstPost = indexOfLastPost - limit;
+  const currentPost = place.slice(indexOfFirstPost, indexOfLastPost);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <table className="table table-striped table-dark table-bordered table-hover">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Body</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {currentPost.map((item, index) => {
+            return (
+              <tr key={index}>
+                <td>{item.id}</td>
+                <td>{item.title}</td>
+                <td>{item.body}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+        <Pagination limit={limit} total={place.length} paginate={paginate} />
+      </table>
     </div>
   );
 }
