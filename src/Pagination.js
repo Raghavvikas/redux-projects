@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const Pagination = ({ limit, total, paginate }) => {
   const number = [];
@@ -7,13 +7,17 @@ const Pagination = ({ limit, total, paginate }) => {
   for (let i = 1; i < limit; i++) {
     number.push(i);
   }
-
+  console.log(current);
   return (
     <div className="">
       <nav className="p-5">
         <ul className="pagination">
-          <li className="page-item">
-            <button onClick={() => paginate(current - 1)} className="page-link">
+          <li className="page-item" key={current}>
+            <button
+              disabled={current === 1 ? true : false}
+              onClick={() => paginate(current - 1)}
+              className="page-link"
+            >
               Prev
             </button>
           </li>
